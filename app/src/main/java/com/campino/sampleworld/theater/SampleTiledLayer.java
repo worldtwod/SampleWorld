@@ -59,7 +59,7 @@ public class SampleTiledLayer extends TiledLayer {
         MapLayer.Builder builder = new MapLayer.Builder()
                 .setName("MapLayer")
                 .setOffset(0, 0)
-                .setGridSize(MAX_TILES_X, 5)
+                .setGridSize(MAX_TILES_X, 10)
                 .setTileSize(84, 84);
         int i=0;
         int id=1000;

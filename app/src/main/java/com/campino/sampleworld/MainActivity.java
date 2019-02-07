@@ -4,14 +4,16 @@ import android.os.Bundle;
 
 import com.campino.sampleworld.theater.SampleWorld2D;
 import com.titicolab.nanux.core.SceneLauncher;
-import com.titicolab.puppeteer.GameActivity;
+import com.titicolab.puppeteer.GraphicActivity;
 
-public class MainActivity extends GameActivity implements SceneLauncher {
+
+public class MainActivity extends GraphicActivity implements SceneLauncher {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sFlagFullScreen=true;
         sFlagSensorLandscape=true;
+        sFlatDisplayFPS=true;
         super.onCreate(savedInstanceState);
         setSceneLauncher(this);
         setContentView(getGLGameView());

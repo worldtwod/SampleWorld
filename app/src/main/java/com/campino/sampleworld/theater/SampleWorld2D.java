@@ -16,21 +16,27 @@
 
 package com.campino.sampleworld.theater;
 
-import com.titicolab.nanux.touch.ObservableInput;
+
 import com.titicolab.puppet.map.MapWorld;
 import com.titicolab.puppet.objects.World2D;
+import com.titicolab.puppeteer.ui.JoystickLayer;
 
 /**
  * Created by campino on 11/01/2018.
  *
  */
 
-public class SampleWorld2D extends World2D {
+public class SampleWorld2D extends World2D implements JoystickLayer.OnClickJoystick {
 
+    private static final int GROUND_LAYER = 1;
+    private static final int JOYSTICK_LAYER = 2;
     private boolean flagTouchRight;
     private boolean flagTouchLeft;
-    private int positionI;
-    private int positionJ;
+    private boolean flagTouchUp;
+    private boolean flagTouchDown;
+
+    public SampleWorld2D() {
+    }
 
 
     @Override
@@ -41,42 +47,57 @@ public class SampleWorld2D extends World2D {
                 .setTileSize(84, 84)
                 .setCameraSize(5,true)
                 .setFocusedWindowSize(9,true)
-                .layer(SampleTiledLayer.class,1,null)
+                .layer(SampleTiledLayer.class,GROUND_LAYER,null)
+                .layer(JoystickLayer.class,JOYSTICK_LAYER,null)
                 .build();
     }
 
-
     @Override
     protected void onGroupLayersCreated() {
-        super.onGroupLayersCreated();
-        positionI=5; positionJ=2;
+        JoystickLayer layer = (JoystickLayer) findLayer(JOYSTICK_LAYER);
+        layer.setOnClickJoystickListener(this);
+        setDrawBoundary(true);
+        setDrawCamera(true);
     }
 
     @Override
-    protected void updateLogic() {
+    protected void updateLogic(){
         if(flagTouchLeft){
-            getCamera2D().setPositionIj(--positionI,positionJ);
+            getCamera2D().setPositionIj(getCamera2D().getI()-1,getCamera2D().getJ());
             flagTouchLeft=false;
         }else  if(flagTouchRight){
-            getCamera2D().setPositionIj(++positionI,positionJ);
+            getCamera2D().setPositionIj(getCamera2D().getI()+1,getCamera2D().getJ());
             flagTouchRight=false;
+        }else if(flagTouchUp){
+            getCamera2D().setPositionIj(getCamera2D().getI(),getCamera2D().getJ()+1);
+            flagTouchUp=false;
+        }else  if(flagTouchDown){
+            getCamera2D().setPositionIj(getCamera2D().getI(),getCamera2D().getJ()-1);
+            flagTouchDown=false;
         }
+
+
+
       super.updateLogic();
     }
 
     @Override
-    protected boolean onTouch(ObservableInput.Event input) {
-
-        if(input.isActionUp()) {
-            if (input.getUiX() < (getCameraUi().getViewPortWidth() / 2)) {
-                flagTouchLeft = true;
-            } else {
-                flagTouchRight = true;
-            }
-        }
-
-        return true;
+    public void onLeft() {
+        flagTouchLeft = true;
     }
 
+    @Override
+    public void onRight() {
+        flagTouchRight = true;
+    }
 
+    @Override
+    public void onTop() {
+        flagTouchUp = true;
+    }
+
+    @Override
+    public void onBottom() {
+        flagTouchDown = true;
+    }
 }
